@@ -23,6 +23,9 @@
   "bin": {
     "mtsv": "./dist/cli.js"
   },
+  "files": [
+    "dist/"
+  ],
   "exports": {
     "./package.json": "./package.json",
     ".": {
@@ -33,7 +36,7 @@
   "scripts": {
     "dev": "tsdown --watch",
     "prebuild": "rm -rf dist",
-    "postbuild": "size-limit --json > size.json",
+    "build": "tsdown",
     "test": "pnpm run --stream '/^test:/'",
     "test:unit": "vitest run --typecheck",
     "test:size": "size-limit",
