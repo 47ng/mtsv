@@ -40,7 +40,7 @@ async function main() {
   }
 
   const versions = await fetchTypeScriptVersions()
-  const cache = new TypeScriptCDNCache(process.cwd())
+  const cache = new TypeScriptCDNCache()
 
   const sequencer = new BinarySearchSequencer<string, boolean>(
     console,
