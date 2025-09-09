@@ -59,6 +59,7 @@
   },
   "dependencies": {
     "@typescript/vfs": "^1.6.1",
+    "commander": "^14.0.0",
     "semver": "^7.7.2"
   },
   "size-limit": [
