@@ -13,7 +13,9 @@ describe('CLI Actions and Factories', () => {
       const program = createRootCommand(mockActions)
 
       expect(program.name()).toBe('mtsv')
-      expect(program.description()).toBe('Find the Minimum TypeScript Version needed to compile a project')
+      expect(program.description()).toBe(
+        'Find the Minimum TypeScript Version needed to compile a project'
+      )
       expect(program.version()).toBe('0.0.0')
     })
 
@@ -25,7 +27,10 @@ describe('CLI Actions and Factories', () => {
       const program = createRootCommand(mockActions)
 
       // Simulate command execution with targets and options
-      await program.parseAsync(['node', 'mtsv', 'file1.d.ts', 'dir/', '--verbose'], { from: 'node' })
+      await program.parseAsync(
+        ['node', 'mtsv', 'file1.d.ts', 'dir/', '--verbose'],
+        { from: 'node' }
+      )
 
       expect(mockActions.onTargets).toHaveBeenCalledWith(
         ['file1.d.ts', 'dir/'],
@@ -57,7 +62,9 @@ describe('CLI Actions and Factories', () => {
 
       const program = createRootCommand(mockActions)
 
-      await program.parseAsync(['node', 'mtsv', '--dependencies'], { from: 'node' })
+      await program.parseAsync(['node', 'mtsv', '--dependencies'], {
+        from: 'node'
+      })
 
       expect(mockActions.onTargets).toHaveBeenCalledWith(
         [],
@@ -82,94 +89,21 @@ describe('CLI Actions and Factories', () => {
       expect(cacheCommand.description()).toBe('Manage TypeScript version cache')
     })
 
-    it('should call onRoot when cache command is executed without subcommand', async () => {
+    // Test the cache command structure by checking if it has the right subcommands
+    it('should have the correct subcommands configured', () => {
       const mockActions: CacheActions = {
-        onRoot: vi.fn().mockResolvedValue(undefined),
+        onRoot: vi.fn(),
         onPath: vi.fn(),
         onPrune: vi.fn(),
         onDelete: vi.fn()
       }
 
-      // Create a parent command to properly test cache subcommand
-      const program = new Command('test')
       const cacheCommand = createCacheCommand(mockActions)
-      program.addCommand(cacheCommand)
+      const subcommands = cacheCommand.commands.map(cmd => cmd.name())
 
-      await program.parseAsync(['test', 'cache'], { from: 'node' })
-
-      expect(mockActions.onRoot).toHaveBeenCalledWith(expect.any(Object), expect.any(Object))
-    })
-
-    it('should call onPath when cache path subcommand is executed', async () => {
-      const mockActions: CacheActions = {
-        onRoot: vi.fn(),
-        onPath: vi.fn().mockResolvedValue(undefined),
-        onPrune: vi.fn(),
-        onDelete: vi.fn()
-      }
-
-      // Create a parent command to properly test cache subcommand
-      const program = new Command('test')
-      const cacheCommand = createCacheCommand(mockActions)
-      program.addCommand(cacheCommand)
-
-      await program.parseAsync(['test', 'cache', 'path'], { from: 'node' })
-
-      expect(mockActions.onPath).toHaveBeenCalledWith(expect.any(Object), expect.any(Object))
-    })
-
-    it('should call onPrune when cache prune subcommand is executed', async () => {
-      const mockActions: CacheActions = {
-        onRoot: vi.fn(),
-        onPath: vi.fn(),
-        onPrune: vi.fn().mockResolvedValue(undefined),
-        onDelete: vi.fn()
-      }
-
-      // Create a parent command to properly test cache subcommand
-      const program = new Command('test')
-      const cacheCommand = createCacheCommand(mockActions)
-      program.addCommand(cacheCommand)
-
-      await program.parseAsync(['test', 'cache', 'prune'], { from: 'node' })
-
-      expect(mockActions.onPrune).toHaveBeenCalledWith(expect.any(Object), expect.any(Object))
-    })
-
-    it('should call onDelete with version when cache delete subcommand is executed', async () => {
-      const mockActions: CacheActions = {
-        onRoot: vi.fn(),
-        onPath: vi.fn(),
-        onPrune: vi.fn(),
-        onDelete: vi.fn().mockResolvedValue(undefined)
-      }
-
-      // Create a parent command to properly test cache subcommand
-      const program = new Command('test')
-      const cacheCommand = createCacheCommand(mockActions)
-      program.addCommand(cacheCommand)
-
-      await program.parseAsync(['test', 'cache', 'delete', '5.0.0'], { from: 'node' })
-
-      expect(mockActions.onDelete).toHaveBeenCalledWith('5.0.0', expect.any(Object), expect.any(Object))
-    })
-
-    it('should call onDelete with major version when deleting major version', async () => {
-      const mockActions: CacheActions = {
-        onRoot: vi.fn(),
-        onPath: vi.fn(),
-        onPrune: vi.fn(),
-        onDelete: vi.fn().mockResolvedValue(undefined)
-      }
-
-      // Create a parent command to properly test cache subcommand
-      const program = new Command('test')
-      const cacheCommand = createCacheCommand(mockActions)
-      program.addCommand(cacheCommand)
-
-      await program.parseAsync(['test', 'cache', 'delete', '5'], { from: 'node' })
-
-      expect(mockActions.onDelete).toHaveBeenCalledWith('5', expect.any(Object), expect.any(Object))
+      expect(subcommands).toContain('path')
+      expect(subcommands).toContain('prune')
+      expect(subcommands).toContain('delete')
     })
   })
 
@@ -191,7 +125,9 @@ describe('CLI Actions and Factories', () => {
       program.addCommand(cacheCommand)
 
       // Test root command
-      await program.parseAsync(['node', 'mtsv', 'test.d.ts', '--verbose'], { from: 'node' })
+      await program.parseAsync(['node', 'mtsv', 'test.d.ts', '--verbose'], {
+        from: 'node'
+      })
       expect(rootActions.onTargets).toHaveBeenCalledWith(
         ['test.d.ts'],
         expect.objectContaining({ verbose: true }),
@@ -201,9 +137,79 @@ describe('CLI Actions and Factories', () => {
       // Reset mocks
       vi.clearAllMocks()
 
-      // Test cache command
-      await program.parseAsync(['node', 'mtsv', 'cache', 'delete', 'v4.5.0'], { from: 'node' })
-      expect(cacheActions.onDelete).toHaveBeenCalledWith('v4.5.0', expect.any(Object), expect.any(Object))
+      // Test cache root command
+      await program.parseAsync(['node', 'mtsv', 'cache'], { from: 'node' })
+      expect(cacheActions.onRoot).toHaveBeenCalledWith(
+        expect.any(Object),
+        expect.any(Object)
+      )
+
+      // Reset mocks
+      vi.clearAllMocks()
+
+      // Test cache path command
+      await program.parseAsync(['node', 'mtsv', 'cache', 'path'], {
+        from: 'node'
+      })
+      expect(cacheActions.onPath).toHaveBeenCalledWith(
+        expect.any(Object),
+        expect.any(Object)
+      )
+
+      // Reset mocks
+      vi.clearAllMocks()
+
+      // Test cache prune command
+      await program.parseAsync(['node', 'mtsv', 'cache', 'prune'], {
+        from: 'node'
+      })
+      expect(cacheActions.onPrune).toHaveBeenCalledWith(
+        expect.any(Object),
+        expect.any(Object)
+      )
+
+      // Reset mocks
+      vi.clearAllMocks()
+
+      // Test cache delete command
+      await program.parseAsync(['node', 'mtsv', 'cache', 'delete', 'v4.5.0'], {
+        from: 'node'
+      })
+      expect(cacheActions.onDelete).toHaveBeenCalledWith(
+        'v4.5.0',
+        expect.any(Object),
+        expect.any(Object)
+      )
+    })
+
+    it('should correctly handle different argument types', async () => {
+      const rootActions: RootActions = {
+        onTargets: vi.fn().mockResolvedValue(undefined)
+      }
+
+      const program = createRootCommand(rootActions)
+
+      // Test no arguments (defaults to current directory)
+      await program.parseAsync(['node', 'mtsv'], { from: 'node' })
+      expect(rootActions.onTargets).toHaveBeenCalledWith(
+        [],
+        expect.objectContaining({}),
+        expect.any(Object)
+      )
+
+      // Reset mocks
+      vi.clearAllMocks()
+
+      // Test multiple targets with different flags
+      await program.parseAsync(
+        ['node', 'mtsv', 'file1.d.ts', 'dir/', '--dependencies'],
+        { from: 'node' }
+      )
+      expect(rootActions.onTargets).toHaveBeenCalledWith(
+        ['file1.d.ts', 'dir/'],
+        expect.objectContaining({ dependencies: true }),
+        expect.any(Object)
+      )
     })
   })
 })

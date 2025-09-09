@@ -9,14 +9,16 @@ export function createRootCommand(actions: RootActions): Command {
 
   program
     .name('mtsv')
-    .description('Find the Minimum TypeScript Version needed to compile a project')
+    .description(
+      'Find the Minimum TypeScript Version needed to compile a project'
+    )
     .version('0.0.0')
 
   // Root command
   program
     .argument('[targets...]', 'Files, directories, or packages to check')
     .option('-v, --verbose', 'Enable verbose output')
-    .option('-d, --dependencies', 'Check node_modules for dependencies\' mtsv')
+    .option('-d, --dependencies', "Check node_modules for dependencies' mtsv")
     .action(actions.onTargets)
 
   return program
@@ -26,11 +28,11 @@ export function createRootCommand(actions: RootActions): Command {
  * Creates the cache command with the provided actions
  */
 export function createCacheCommand(actions: CacheActions): Command {
-  const cacheCommand = new Command('cache')
-    .description('Manage TypeScript version cache')
+  const cacheCommand = new Command('cache').description(
+    'Manage TypeScript version cache'
+  )
 
-  cacheCommand
-    .action(actions.onRoot)
+  cacheCommand.action(actions.onRoot)
 
   cacheCommand
     .command('path')

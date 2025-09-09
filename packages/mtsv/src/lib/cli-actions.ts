@@ -6,7 +6,11 @@
 import type { Command } from 'commander'
 
 export interface RootActions {
-  onTargets(targets: string[], options: { verbose?: boolean; dependencies?: boolean }, command: Command): Promise<void>
+  onTargets(
+    targets: string[],
+    options: { verbose?: boolean; dependencies?: boolean },
+    command: Command
+  ): Promise<void>
 }
 
 export interface CacheActions {
