@@ -44,13 +44,13 @@
   },
   "packageManager": "pnpm@10.14.0",
   "devDependencies": {
-    "@size-limit/preset-small-lib": "^11.2.0",
     "@types/node": "^24.3.0",
     "@types/semver": "^7.7.0",
     "@vitest/coverage-v8": "^3.2.4",
     "fast-check": "^4.2.0",
     "msw": "^2.11.1",
     "size-limit": "^11.2.0",
+    "size-limit-preset-node-lib": "^0.4.0",
     "tsdown": "^0.14.1",
     "typescript": "^5.9.2",
     "vitest": "^3.2.4",
@@ -60,5 +60,15 @@
   "dependencies": {
     "@typescript/vfs": "^1.6.1",
     "semver": "^7.7.2"
-  }
+  },
+  "size-limit": [
+    {
+      "path": "dist/index.js",
+      "limit": "5 kB"
+    },
+    {
+      "path": "dist/cli.js",
+      "limit": "50 kB"
+    }
+  ]
 }
