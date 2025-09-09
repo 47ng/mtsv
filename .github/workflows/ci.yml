@@ -12,7 +12,7 @@ on:
 jobs:
   test:
     name: Test
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-arm
     steps:
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
       - uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda
