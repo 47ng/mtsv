@@ -34,10 +34,11 @@ test: Add unit tests for version parsing
 chore: Update dependencies to latest versions
 ```
 
-**Breaking Changes**: Add `!` after the type for breaking changes:
+**Breaking Changes**: Denote breaking changes in the commit body with `BREAKING CHANGE:`:
 ```
-feat!: Remove deprecated --legacy flag
-fix!: Change default output format to JSON
+fix: Some bad bug that requires a major version
+
+BREAKING CHANGE: this breaks everything. Sorry.
 ```
 
 This format enables automatic:
