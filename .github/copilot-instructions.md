@@ -6,6 +6,46 @@
 
 mtsv is a CLI tool that finds the minimum TypeScript version needed to compile a project by testing .d.ts files against different TypeScript versions. It's built as a TypeScript monorepo using pnpm workspaces and Turbo build system.
 
+## Contributing Guidelines
+
+### Pull Request Titles
+
+**IMPORTANT**: All PR titles must follow [Conventional Commits](https://conventionalcommits.org/) format to enable automatic version management with semantic-release.
+
+**Format**: `<type>: <description>`
+
+**Required Types**:
+- `feat:` - New features or functionality
+- `fix:` - Bug fixes
+- `docs:` - Documentation changes
+- `style:` - Code formatting, missing semicolons (no production code change)
+- `refactor:` - Code refactoring (no functional changes)
+- `test:` - Adding missing tests or correcting existing tests
+- `chore:` - Maintenance tasks, dependency updates, build configuration
+
+**Examples**:
+```
+feat: Add TypeScript 5.6 support
+fix: Handle malformed package.json files
+docs: Update CLI usage examples
+style: Format code with prettier
+refactor: Extract version detection logic
+test: Add unit tests for version parsing
+chore: Update dependencies to latest versions
+```
+
+**Breaking Changes**: Denote breaking changes in the commit body with `BREAKING CHANGE:`:
+```
+fix: Some bad bug that requires a major version
+
+BREAKING CHANGE: this breaks everything. Sorry.
+```
+
+This format enables automatic:
+- Version bumping (major.minor.patch)
+- Changelog generation
+- Release notes creation
+
 ## Working Effectively
 
 ### Prerequisites
