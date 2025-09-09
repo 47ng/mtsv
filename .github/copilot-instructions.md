@@ -9,19 +9,18 @@ mtsv is a CLI tool that finds the minimum TypeScript version needed to compile a
 ## Working Effectively
 
 ### Prerequisites
-- **Node.js**: Use version 20.19.4+ or the version specified in `.node-version` (24.6.0)
-- **Package Manager**: Use pnpm 10.15.0 (specified in `package.json` packageManager field)
+- **Node.js**: Use the version specified in `.node-version`
+- **Package Manager**: Use pnpm (version specified in `package.json` packageManager field)
 
 Install pnpm if not available:
 ```bash
-npm install -g pnpm@10.15.0
+npm install -g pnpm
 ```
 
 ### Repository Setup and Build Process
 
 Bootstrap the repository:
 ```bash
-cd /home/runner/work/mtsv/mtsv
 pnpm install  # Takes ~18 seconds. NEVER CANCEL. Set timeout to 120+ seconds.
 ```
 
@@ -38,8 +37,7 @@ The build creates two main outputs in `packages/mtsv/dist/`:
 
 Run unit tests:
 ```bash
-cd packages/mtsv
-pnpm run test:unit  # Takes ~1 second. NEVER CANCEL. Set timeout to 30+ seconds.
+pnpm --filter mtsv run test:unit  # Takes ~1 second. NEVER CANCEL. Set timeout to 30+ seconds.
 ```
 
 **IMPORTANT**: Do NOT run `pnpm run test` - it will fail because the size-limit configuration is missing. Always use `pnpm run test:unit` for unit testing.
@@ -61,8 +59,7 @@ This runs:
 
 Start development with watch mode:
 ```bash
-cd packages/mtsv
-pnpm run dev  # Runs tsdown in watch mode. NEVER CANCEL.
+pnpm --filter mtsv run dev  # Runs tsdown in watch mode. NEVER CANCEL.
 ```
 
 This rebuilds automatically when source files change.
@@ -73,8 +70,7 @@ This rebuilds automatically when source files change.
 
 After building, test the CLI:
 ```bash
-cd packages/mtsv
-./dist/cli.js tests/5.0.0.d.ts  # Basic test with included test file
+./packages/mtsv/dist/cli.js tests/5.0.0.d.ts  # Basic test with included test file
 ```
 
 **NETWORK DEPENDENCY**: The CLI requires internet access to fetch TypeScript versions from unpkg.com. In environments without network access, the CLI will fail with `ENOTFOUND unpkg.com` errors.
@@ -85,20 +81,17 @@ cd packages/mtsv
 
 1. **Help/Usage Display**:
    ```bash
-   cd packages/mtsv
-   ./dist/cli.js  # Should show usage message
+   ./packages/mtsv/dist/cli.js  # Should show usage message
    ```
 
 2. **Test File Processing** (requires network):
    ```bash
-   cd packages/mtsv  
-   ./dist/cli.js --verbose tests/5.0.0.d.ts  # Should analyze TypeScript compatibility
+   ./packages/mtsv/dist/cli.js --verbose packages/mtsv/tests/5.0.0.d.ts  # Should analyze TypeScript compatibility
    ```
 
 3. **Library Import Test**:
    ```bash
-   cd packages/mtsv
-   node -e "import('./dist/index.js').then(console.log)"  # Should load without errors
+   node -e "import('./packages/mtsv/dist/index.js').then(console.log)"  # Should load without errors
    ```
 
 ## Project Structure
@@ -150,7 +143,7 @@ pnpm run test:size    # Size limit test (FAILS - missing config)
 
 ### Before Committing Changes
 1. **ALWAYS run the build**: `pnpm run build`
-2. **ALWAYS run unit tests**: `cd packages/mtsv && pnpm run test:unit` 
+2. **ALWAYS run unit tests**: `pnpm --filter mtsv run test:unit` 
 3. **ALWAYS run linting**: `pnpm run lint`
 4. **ALWAYS test CLI manually** with the validation scenarios above
 
@@ -172,20 +165,20 @@ pnpm run test:size    # Size limit test (FAILS - missing config)
 
 ## Troubleshooting
 
-- **Build failures**: Ensure Node.js 24.6.0 and pnpm 10.15.0 are installed
+- **Build failures**: Ensure Node.js and pnpm versions match those specified in `.node-version` and `package.json`
 - **Test failures**: Use `pnpm run test:unit` instead of `pnpm run test`
 - **CLI network errors**: Expected in environments without internet access
-- **Watch mode issues**: Restart with `pnpm run dev` in packages/mtsv/
+- **Watch mode issues**: Restart with `pnpm --filter mtsv run dev`
 
 ## Quick Start Checklist
 
 When working with this repository for the first time:
 
-- [ ] Verify Node.js 20.19.4+ is installed (or 24.6.0 as specified in .node-version)
-- [ ] Install pnpm 10.15.0: `npm install -g pnpm@10.15.0`
+- [ ] Verify Node.js version matches `.node-version`
+- [ ] Install pnpm using version from `package.json`: `npm install -g pnpm`
 - [ ] Install dependencies: `pnpm install` (120s timeout)
 - [ ] Build project: `pnpm run build` (60s timeout)  
-- [ ] Run unit tests: `cd packages/mtsv && pnpm run test:unit` (30s timeout)
+- [ ] Run unit tests: `pnpm --filter mtsv run test:unit` (30s timeout)
 - [ ] Run linting: `pnpm run lint` (30s timeout)
 - [ ] Test CLI: `./packages/mtsv/dist/cli.js` (shows usage)
-- [ ] Start development: `cd packages/mtsv && pnpm run dev`
+- [ ] Start development: `pnpm --filter mtsv run dev`
