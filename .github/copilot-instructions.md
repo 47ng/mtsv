@@ -40,13 +40,6 @@ Run all tests (preferred):
 pnpm run test  # Takes ~3 seconds. NEVER CANCEL. Set timeout to 60+ seconds.
 ```
 
-**Note**: The size-limit issue has been fixed. `pnpm run test` is now the preferred way of running repo-wide tests.
-
-Run unit tests only:
-```bash
-pnpm --filter mtsv run test:unit  # Takes ~1 second. NEVER CANCEL. Set timeout to 30+ seconds.
-```
-
 ### Linting
 
 Run all linting:
@@ -64,7 +57,7 @@ This runs:
 
 Start development with watch mode:
 ```bash
-pnpm --filter mtsv run dev  # Runs tsdown in watch mode. NEVER CANCEL.
+pnpm run dev --filter mtsv  # Runs tsdown in watch mode. NEVER CANCEL.
 ```
 
 This rebuilds automatically when source files change.
@@ -167,7 +160,7 @@ pnpm run test:size    # Size limit test (~1s)
 - **Build failures**: Ensure Node.js and pnpm versions match those specified in `.node-version` and `package.json`
 - **Test failures**: Run `pnpm run test` for all tests or `pnpm run test:unit` for unit tests only
 - **CLI network errors**: Expected in environments without internet access
-- **Watch mode issues**: Restart with `pnpm --filter mtsv run dev`
+- **Watch mode issues**: Restart with `pnpm run dev --filter mtsv`
 
 ## Quick Start Checklist
 
@@ -180,4 +173,4 @@ When working with this repository for the first time:
 - [ ] Run all tests: `pnpm run test` (60s timeout)
 - [ ] Run linting: `pnpm run lint` (30s timeout)
 - [ ] Test CLI: `./packages/mtsv/dist/cli.js` (shows usage)
-- [ ] Start development: `pnpm --filter mtsv run dev`
+- [ ] Start development: `pnpm run dev --filter mtsv`
