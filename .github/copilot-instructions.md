@@ -35,12 +35,17 @@ The build creates two main outputs in `packages/mtsv/dist/`:
 
 ### Testing
 
-Run unit tests:
+Run all tests (preferred):
+```bash
+pnpm run test  # Takes ~3 seconds. NEVER CANCEL. Set timeout to 60+ seconds.
+```
+
+**Note**: The size-limit issue has been fixed. `pnpm run test` is now the preferred way of running repo-wide tests.
+
+Run unit tests only:
 ```bash
 pnpm --filter mtsv run test:unit  # Takes ~1 second. NEVER CANCEL. Set timeout to 30+ seconds.
 ```
-
-**IMPORTANT**: Do NOT run `pnpm run test` - it will fail because the size-limit configuration is missing. Always use `pnpm run test:unit` for unit testing.
 
 ### Linting
 
@@ -89,11 +94,6 @@ After building, test the CLI:
    ./packages/mtsv/dist/cli.js --verbose packages/mtsv/tests/5.0.0.d.ts  # Should analyze TypeScript compatibility
    ```
 
-3. **Library Import Test**:
-   ```bash
-   node -e "import('./packages/mtsv/dist/index.js').then(console.log)"  # Should load without errors
-   ```
-
 ## Project Structure
 
 ### Key Directories
@@ -126,7 +126,7 @@ The project uses `tsdown` (powered by rolldown) for building:
 ```bash
 pnpm install          # Install all dependencies (~18s)
 pnpm run build        # Build all packages (~4s)  
-pnpm run test         # Run all tests (FAILS - use test:unit instead)
+pnpm run test         # Run all tests (~3s)
 pnpm run lint         # Run all linting (~1s)
 pnpm run dev          # Start development mode with watch
 ```
@@ -136,20 +136,21 @@ pnpm run dev          # Start development mode with watch
 pnpm run dev          # Development with watch mode
 pnpm run build        # Build this package only
 pnpm run test:unit    # Run unit tests (~1s)
-pnpm run test:size    # Size limit test (FAILS - missing config)
+pnpm run test:size    # Size limit test (~1s)
 ```
 
 ## Validation Requirements
 
 ### Before Committing Changes
 1. **ALWAYS run the build**: `pnpm run build`
-2. **ALWAYS run unit tests**: `pnpm --filter mtsv run test:unit` 
+2. **ALWAYS run all tests**: `pnpm run test`
 3. **ALWAYS run linting**: `pnpm run lint`
 4. **ALWAYS test CLI manually** with the validation scenarios above
 
 ### Timeout Guidelines
 - **Dependency installation**: Set timeout to 120+ seconds (takes ~18s)
 - **Build process**: Set timeout to 60+ seconds (takes ~4s)
+- **All tests**: Set timeout to 60+ seconds (takes ~3s)
 - **Unit tests**: Set timeout to 30+ seconds (takes ~1s)  
 - **Linting**: Set timeout to 30+ seconds (takes ~1s)
 
@@ -157,16 +158,14 @@ pnpm run test:size    # Size limit test (FAILS - missing config)
 
 ## Known Issues
 
-1. **Size-limit test failure**: The `pnpm run test` command fails because size-limit configuration is missing. Use `pnpm run test:unit` instead.
+1. **Network dependency**: The CLI requires internet access to function. In sandboxed environments, it will fail to fetch TypeScript versions from unpkg.com.
 
-2. **Network dependency**: The CLI requires internet access to function. In sandboxed environments, it will fail to fetch TypeScript versions from unpkg.com.
-
-3. **No help flag**: The CLI doesn't implement `--help`. Run without arguments to see usage.
+2. **No help flag**: The CLI doesn't implement `--help`. Run without arguments to see usage.
 
 ## Troubleshooting
 
 - **Build failures**: Ensure Node.js and pnpm versions match those specified in `.node-version` and `package.json`
-- **Test failures**: Use `pnpm run test:unit` instead of `pnpm run test`
+- **Test failures**: Run `pnpm run test` for all tests or `pnpm run test:unit` for unit tests only
 - **CLI network errors**: Expected in environments without internet access
 - **Watch mode issues**: Restart with `pnpm --filter mtsv run dev`
 
@@ -178,7 +177,7 @@ When working with this repository for the first time:
 - [ ] Install pnpm using version from `package.json`: `npm install -g pnpm`
 - [ ] Install dependencies: `pnpm install` (120s timeout)
 - [ ] Build project: `pnpm run build` (60s timeout)  
-- [ ] Run unit tests: `pnpm --filter mtsv run test:unit` (30s timeout)
+- [ ] Run all tests: `pnpm run test` (60s timeout)
 - [ ] Run linting: `pnpm run lint` (30s timeout)
 - [ ] Test CLI: `./packages/mtsv/dist/cli.js` (shows usage)
 - [ ] Start development: `pnpm --filter mtsv run dev`
