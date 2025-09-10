@@ -1,13 +1,16 @@
 // src/mocks/test-setup.ts
-import { createConfigurableHandlers, type TypeScriptVersionConfig } from './configurable-handlers'
+import {
+  createConfigurableHandlers,
+  type TypeScriptVersionConfig
+} from './configurable-handlers'
 import { server } from './node'
 
 /**
  * Configure the global MSW server for testing with specific TypeScript version behavior.
  * This function should be called in test setup to replace the default handlers.
- * 
+ *
  * @param config - Configuration object defining which versions are available and their behavior
- * 
+ *
  * @example
  * ```typescript
  * beforeEach(() => {

@@ -10,13 +10,13 @@ export type TypeScriptVersionConfig = Record<string, boolean>
 
 /**
  * Generate a minimal TypeScript module mock that either passes or fails compilation.
- * 
+ *
  * @param version - The TypeScript version to mock
  * @param shouldPass - Whether this version should pass (true) or emit diagnostics (false)
  */
 function generateTypeScriptMock(version: string, shouldPass: boolean): string {
-  const diagnostics = shouldPass 
-    ? '[]' 
+  const diagnostics = shouldPass
+    ? '[]'
     : `[{
         category: 1, // Error
         code: 2345,
@@ -104,7 +104,7 @@ module.exports = typescript`
 
 /**
  * Create MSW handlers configured for a specific test case.
- * 
+ *
  * @param config - Configuration object where keys are version numbers and values indicate pass/fail
  * @returns Array of MSW handlers for this test configuration
  */
@@ -147,7 +147,7 @@ export function createConfigurableHandlers(config: TypeScriptVersionConfig) {
 
         // Generate mock content based on test configuration
         const content = generateTypeScriptMock(version, shouldPass)
-        
+
         return new HttpResponse(content, {
           status: 200,
           headers: {
@@ -163,11 +163,13 @@ export function createConfigurableHandlers(config: TypeScriptVersionConfig) {
 /**
  * Type guard to ensure a test config is valid.
  */
-export function isValidVersionConfig(config: unknown): config is TypeScriptVersionConfig {
+export function isValidVersionConfig(
+  config: unknown
+): config is TypeScriptVersionConfig {
   if (typeof config !== 'object' || config === null) {
     return false
   }
-  
+
   return Object.entries(config).every(([key, value]) => {
     return typeof key === 'string' && typeof value === 'boolean'
   })

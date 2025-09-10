@@ -8,6 +8,11 @@ import {
   TypeScriptMemoryCache,
   type TypeScriptCacheInterface
 } from './typescript-cache'
+import {
+  configureTestServer,
+  resetTestServer,
+  testConfigs
+} from '../mocks/test-setup'
 
 describe('TypeScript Cache Classes', () => {
   describe('TypeScriptMemoryCache', () => {
@@ -69,6 +74,7 @@ describe('TypeScript Cache Classes', () => {
     afterEach(() => {
       // Clean up temp directory
       rmSync(tempDir, { recursive: true, force: true })
+      resetTestServer() // Reset to default handlers after each test
     })
 
     it('should create cache with correct path', () => {
@@ -76,7 +82,9 @@ describe('TypeScript Cache Classes', () => {
     })
 
     it('should load TypeScript version from CDN (mocked)', async () => {
-      // This test uses the mocked CDN that serves from our test cache
+      // Configure test to provide a passing TypeScript 4.0.0 version
+      configureTestServer(testConfigs.singlePass('4.0.0'))
+
       const tsModule = await cache.load('4.0.0')
 
       expect(tsModule).toBeDefined()
@@ -85,12 +93,18 @@ describe('TypeScript Cache Classes', () => {
     })
 
     it('should throw error for non-existent versions', async () => {
+      // Configure test with only 4.0.0 available
+      configureTestServer(testConfigs.singlePass('4.0.0'))
+
       await expect(cache.load('99.0.0')).rejects.toThrow(
         'Failed to fetch TypeScript 99.0.0'
       )
     })
 
     it('should cache loaded modules in memory', async () => {
+      // Configure test to provide TypeScript 4.0.0
+      configureTestServer(testConfigs.singlePass('4.0.0'))
+
       // Load the same version twice
       const tsModule1 = await cache.load('4.0.0')
       const tsModule2 = await cache.load('4.0.0')
@@ -104,6 +118,9 @@ describe('TypeScript Cache Classes', () => {
     })
 
     it('should free cached modules', async () => {
+      // Configure test to provide TypeScript 4.0.0
+      configureTestServer(testConfigs.singlePass('4.0.0'))
+
       const tsModule1 = await cache.load('4.0.0')
       cache.free('4.0.0')
 
@@ -114,6 +131,12 @@ describe('TypeScript Cache Classes', () => {
     })
 
     it('should clear all cached modules', async () => {
+      // Configure test to provide multiple TypeScript versions
+      configureTestServer({
+        '4.0.0': true,
+        '5.0.0': true
+      })
+
       await cache.load('4.0.0')
       await cache.load('5.0.0')
 
@@ -126,6 +149,9 @@ describe('TypeScript Cache Classes', () => {
     })
 
     it('should purge cache directory', async () => {
+      // Configure test to provide TypeScript 4.0.0
+      configureTestServer(testConfigs.singlePass('4.0.0'))
+
       await cache.load('4.0.0')
 
       // Purge should remove everything
@@ -169,6 +195,7 @@ describe('TypeScript Cache Classes', () => {
 
       afterEach(() => {
         rmSync(tempDir, { recursive: true, force: true })
+        resetTestServer() // Reset handlers after each test
       })
 
       testCacheInterface(() => new TypeScriptCDNCache(tempDir))
