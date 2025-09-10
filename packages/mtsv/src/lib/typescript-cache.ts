@@ -1,4 +1,4 @@
-import { mkdir, rmdir, stat, writeFile } from 'node:fs/promises'
+import { mkdir, rmdir, stat, writeFile, rm } from 'node:fs/promises'
 import { createRequire } from 'node:module'
 import { tmpdir } from 'node:os'
 import { dirname, resolve } from 'node:path'
@@ -91,7 +91,9 @@ export class TypeScriptCDNCache implements TypeScriptCacheInterface {
 
   async load(version: string): Promise<TypeScriptModule> {
     const filePath = this.#resolveVersionFile(version)
-    let tsModule = this.require.cache[filePath] as TypeScriptModule | undefined
+    let tsModule = this.require.cache[filePath]?.exports as
+      | TypeScriptModule
+      | undefined
     if (tsModule) {
       return tsModule
     }
@@ -112,9 +114,8 @@ export class TypeScriptCDNCache implements TypeScriptCacheInterface {
   }
 
   free(version: string): void {
-    delete this.require.cache[
-      this.require.resolve(this.#resolveVersionFile(version))
-    ]
+    const filePath = this.#resolveVersionFile(version)
+    delete this.require.cache[filePath]
   }
 
   clear(): void {
@@ -128,7 +129,7 @@ export class TypeScriptCDNCache implements TypeScriptCacheInterface {
 
   async purge(): Promise<void> {
     // Also remove from disk
-    return rmdir(this.basePath, { recursive: true }).catch(() => {})
+    return rm(this.basePath, { recursive: true }).catch(() => {})
   }
   get path(): string {
     return this.basePath
