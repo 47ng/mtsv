@@ -2,3 +2,6 @@ size.json
 mtsv-cache/
 README.md
 LICENSE
+
+# Test mocks and cache
+tests/mocks/cache/*.cts
