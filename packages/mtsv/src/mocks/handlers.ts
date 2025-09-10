@@ -1,25 +1,48 @@
 // src/mocks/handlers.ts
 import { http, HttpResponse } from 'msw'
-import { readFileSync } from 'node:fs'
+import { readFileSync, readdirSync } from 'node:fs'
 import { resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const cacheDir = resolve(__dirname, '../../tests/mocks/cache')
 
+/**
+ * Derive available TypeScript versions from the filesystem.
+ * This makes the filesystem the source of truth for which versions are available.
+ */
+function getAvailableVersions(): string[] {
+  try {
+    const files = readdirSync(cacheDir)
+    const versions = files
+      .filter(file => file.startsWith('typescript-') && file.endsWith('.cts'))
+      .map(file => file.replace('typescript-', '').replace('.cts', ''))
+      .sort()
+    return versions
+  } catch (error) {
+    // If cache directory doesn't exist, return empty array
+    return []
+  }
+}
+
 export const handlers = [
   http.get('https://registry.npmjs.org/typescript', () => {
-    return HttpResponse.json({
-      versions: {
-        '3.0.0': null,
-        '4.0.0': null, // We don't care about the values, only the keys
-        '5.0.0': null,
-        '5.1.0-dev.20240101': null,
-        '5.1.0-insiders.20240101': null,
-        '5.1.0-beta.20240101': null,
-        '5.1.0-rc.20240101': null
-      }
-    })
+    // Dynamically create versions object from available files
+    const availableVersions = getAvailableVersions()
+    const versions: Record<string, null> = {}
+
+    // Add the available versions from filesystem
+    for (const version of availableVersions) {
+      versions[version] = null
+    }
+
+    // Add some additional dev/beta versions for realistic npm registry behavior
+    versions['5.1.0-dev.20240101'] = null
+    versions['5.1.0-insiders.20240101'] = null
+    versions['5.1.0-beta.20240101'] = null
+    versions['5.1.0-rc.20240101'] = null
+
+    return HttpResponse.json({ versions })
   }),
 
   // Mock TypeScript CDN requests
