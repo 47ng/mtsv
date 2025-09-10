@@ -151,8 +151,7 @@ export function createConfigurableHandlers(config: TypeScriptVersionConfig) {
         return new HttpResponse(content, {
           status: 200,
           headers: {
-            'Content-Type': 'application/javascript',
-            'Cache-Control': 'public, max-age=86400'
+            'Content-Type': 'application/javascript'
           }
         })
       }
