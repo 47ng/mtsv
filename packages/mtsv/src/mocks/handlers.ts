@@ -1,4 +1,7 @@
 // src/mocks/handlers.ts
+// Legacy handlers - being replaced by configurable per-test handlers
+// TODO: Remove this file once all tests are migrated to use configurable handlers
+
 import { http, HttpResponse } from 'msw'
 import { readFileSync, readdirSync } from 'node:fs'
 import { resolve, dirname } from 'node:path'
@@ -10,6 +13,8 @@ const cacheDir = resolve(__dirname, '../../tests/mocks/cache')
 /**
  * Derive available TypeScript versions from the filesystem.
  * This makes the filesystem the source of truth for which versions are available.
+ * 
+ * @deprecated Use configurable handlers instead for per-test configuration
  */
 function getAvailableVersions(): string[] {
   try {
@@ -25,6 +30,9 @@ function getAvailableVersions(): string[] {
   }
 }
 
+/**
+ * @deprecated Use createConfigurableHandlers() instead for per-test configuration
+ */
 export const handlers = [
   http.get('https://registry.npmjs.org/typescript', () => {
     // Dynamically create versions object from available files
@@ -71,3 +79,7 @@ export const handlers = [
     }
   )
 ]
+
+// Re-export new configurable functionality
+export { createConfigurableHandlers, type TypeScriptVersionConfig } from './configurable-handlers'
+export { createTestServer, testConfigs } from './test-setup'
